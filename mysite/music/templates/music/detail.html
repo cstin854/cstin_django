@@ -15,6 +15,7 @@ the named group data as album.id. Why isn't it album_id?
 For loop creates each radio button and label in the form.
 Using name="song" allows django to pull out the value (song.id) using the reference POST['song'].
 If statement just puts a little start by the label if the song has "favorite status".
+Input type "submit" allows the user to submit the form data. The "value" is just the label.
 -->
 <form action="{% url 'music:favorite' album.id %}" method="post">
 	{% csrf_token %}
