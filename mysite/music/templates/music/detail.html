@@ -1,37 +1,32 @@
+<!-- Being passed a reference to an Album object. Reference: 'album' -->
+
 {% extends 'music/base.html' %}
 
 {% block body %}
-    <!-- Being passed a reference to an album: album -->
+<div class="container">
+    <div class="jumbotron">
 
-    <img src="{{ album.logo }}">
+        <img src="{{ album.logo }}" height="300" width="300">
 
-    <h1>{{ album.title }}</h1>
-    <h3>{{ album.artist }}</h3>
+        <h1>{{ album.title }}</h1>
+        <h3>{{ album.artist }}</h3>
 
-    {% if error_message %}
-        <p><strong>{{ error_message }}</strong></p>
-    {% endif %}
+        {% if error_message %}
+            <p><strong>{{ error_message }}</strong></p>
+        {% endif %}
 
-    <!--
-    When submitted, the form will take the action of redirecting to the url music:favorite (within urls.py), passing along
-    the named group data as album.id. Why isn't it album_id?
-    For loop creates each radio button and label in the form.
-    Using name="song" allows django to pull out the value (song.id) using the reference POST['song'].
-    If statement just puts a little start by the label if the song has "favorite status".
-    Input type "submit" allows the user to submit the form data. The "value" is just the label.
-    -->
-    <form action="{% url 'music:favorite' album.id %}" method="post">
-        {% csrf_token %}
+        <div class="list-group">
+        {% if album.song_set.all %}
+            <button type="button" class="list-group-item list-group-item-action active" disabled>List of songs:</button>
         {% for song in album.song_set.all %}
-            <input type="radio" id="song{{ forloop.counter}}" name="song" value="{{ song.id }}">
-            <label for="song{{ forloop.counter}}">
-                {{song}}
-                {% if song.is_favorite %}
-                    <img src="http://i.imgur.com/b9b13Rd.png">
-                {% endif %}
-            </label><br>
+        <a href="#" class="list-group-item list-group-item-action">{{ song }}</a>
         {% endfor %}
-        <input type="submit" value="Favorite">
-    </form>
+        {% else %}
+        <button type="button" class="list-group-item list-group-item-action" disabled>Sorry, no songs have been added for this album.</button>
+        {% endif %}
+        </div>
+
+    </div>
+</div>
 
 {% endblock %}
