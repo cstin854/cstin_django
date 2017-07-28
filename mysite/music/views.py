@@ -12,9 +12,20 @@ def index(request):
     return render(request, 'music/index.html', context)
 
 
-def detail(request, pk, error_message=''):
+def detail(request, pk, error_message='',template='music/detail.html'):
     album = get_object_or_404(Album, pk=pk)
-    return render(request, 'music/detail.html', {'album' : album, 'error_message': error_message})
+    #If POST data is received, handle it:
+    if request.POST:
+        #If 'song-add' is passed in POST, use a template that just adds a field to
+        #input the song name.
+        if 'song-add' in request.POST.keys():
+            template='music/song_add.html'
+        #If 'songTitle' is passed by POST, create a song tied to the appropriate album.
+        if 'songTitle' in request.POST.keys():
+            #Attempt to create a song. If an error occurs, create_song will return
+            #an error message. Assign this to error_message for display in the modal.
+            error_message = create_song(pk, request.POST['songTitle'])
+    return render(request, template, {'album' : album, 'error_message': error_message})
 
 # class used to create new instances of Album
 # Naming convention: Object_NameCreate
@@ -37,41 +48,18 @@ class AlbumDelete(DeleteView):
     #Specify which fields the user should be able to control in the model form.
     success_url = reverse_lazy('music:index')
 
-def create_song(request, pk):
-    album = get_object_or_404(Album, pk=pk)
-    return render(request, 'music/song_add.html', {'album' : album})
-
-def song_created(request, pk):
-    album = get_object_or_404(Album, pk=pk)
-    song_list = []
+def create_song(album_id, song_title):
+    album = get_object_or_404(Album, pk=album_id)
     for s in album.song_set.all():
-        if request.POST['songTitle'] == s.title:
-            return detail(request,pk,error_message="A song with that name already exists.")
+        if song_title == s.title:
+            return "A song with that name already exists."
     song = Song()
-    song.title = request.POST['songTitle']
+    song.title = song_title
     song.file_type = '.mp3'
     song.album = album
     song.is_favorite = False
     song.save()
-    return detail(request, pk)
+    return '' #Error message null
 
 def post_test(request):
     return render(request, 'music/post_test.html')
-
-
-#Generic views implementation -- this didn't work for me!
-'''
-from django.views import generic
-from .models import Album
-
-class IndexView(generic.ListView):
-    template = 'music/templates/music/index.html'
-    context_object_name = 'all_albums'
-
-    def get_queryset(self):
-        return Album.objects.all()
-
-class DetailView(generic.DetailView):
-    template = 'music/templates/music/detail.html'
-    model = Album
-'''
