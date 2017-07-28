@@ -24,15 +24,12 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^(?P<pk>[0-9]+)/$', views.detail, name='detail'),
     #Automatically looks for album_form.html
+    #I think I'd like to eventually make my own isntead of relying
     url(r'album/add/$', views.AlbumCreate.as_view(), name='album-add'),
     #/music/url/<album_id>/update
     url(r'^album/(?P<pk>[0-9]+)/$', views.AlbumUpdate.as_view(), name='album-update'),
     #/music/album/<pk>/delete
     url(r'^album/(?P<pk>[0-9]+)/delete/$', views.AlbumDelete.as_view(), name='album-delete'),
-    #A view to add a song.
-    url(r'album/(?P<pk>[0-9]+)/add/$', views.create_song, name='song-add'),
-    #Hmm, trying some post data stuff
-    url(r'album/(?P<pk>[0-9]+)/added/', views.song_created, name='song-added'),
     #Generic test of POST data
-    url(r'post_test/$', views.post_test, name='post-test')
+    url(r'post_test/$', views.post_test, name='post-test'),
 ]
