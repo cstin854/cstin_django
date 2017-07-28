@@ -1,37 +1,41 @@
-        <img src="{{ album.logo }}" height="300" width="300">
+<img src="{{ album.logo }}" height="300" width="300">
 
-        <h1>{{ album.title }}</h1>
-        <h3>{{ album.artist }}</h3>
+<h1>{{ album.title }}</h1>
+<h3>{{ album.artist }}</h3>
 
-        <div class="list-group">
-        {% if album.song_set.all %}
-            <button type="button" class="list-group-item list-group-item-action active" disabled>List of songs:</button>
-        {% for song in album.song_set.all %}
-                <a href="#" class="list-group-item list-group-item-action"><strong>{{ song }}</strong><br>
-                <form action="{% url 'music:post-test' %}" method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="album_id" value="{{ album.id }}"/>
-                        <input type="hidden" name="song_delete" value="{{ song.id }}"/>
-                    <button type="submit" class="btn btn-default btn-sm">
-                        <span class="glyphicon glyphicon-trash"></span>
-                    </button>
-                </form>
-                <form action="{% url 'music:post-test' %}" method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="album_id" value="{{ album.id }}"/>
-                        <input type="hidden" name="song_update" value="{{ song.id }}"/>
-                    <button type="submit" class="btn btn-default btn-sm">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </button>
-                </form>
-                        <form action="https://www.youtube.com/results?search_query={{album.artist}}{{album.title}}{{song.title}}" method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-default btn-sm">
-                        <span class="glyphicon glyphicon-music"></span>
-                    </button>
-                </form>
-        </a>
-        {% endfor %}
-        {% else %}
-        <button type="button" class="list-group-item list-group-item-action" disabled>Sorry, no songs have been added for this album.</button>
-                {% endif %}</div>
+<div class="list-group">
+    {% if album.song_set.all %}
+    <button type="button" class="list-group-item list-group-item-action active" disabled>List of songs:</button>
+    {% for song in album.song_set.all %}
+    <a href="#" class="list-group-item list-group-item-action"><strong>{{ song }}</strong><br>
+        <form action="{% url 'music:post-test' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="album_id" value="{{ album.id }}"/>
+            <input type="hidden" name="song_delete" value="{{ song.id }}"/>
+            <button type="submit" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+        </form>
+        <form action="{% url 'music:post-test' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="album_id" value="{{ album.id }}"/>
+            <input type="hidden" name="song_update" value="{{ song.id }}"/>
+            <button type="submit" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+        </form>
+        <form action="https://www.youtube.com/results?search_query={{album.artist}}{{album.title}}{{song.title}}"
+              method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-music"></span>
+            </button>
+        </form>
+    </a>
+    {% endfor %}
+    {% else %}
+    <button type="button" class="list-group-item list-group-item-action" disabled>Sorry, no songs have been added for
+        this album.
+    </button>
+    {% endif %}
+</div>
