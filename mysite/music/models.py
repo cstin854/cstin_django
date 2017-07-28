@@ -10,7 +10,7 @@ class Album(models.Model):
     #After the user creates a new Album object using album_form,
     #Re-direct the user to music:detail, giving album_id = pk of the newly created album.
     def get_absolute_url(self):
-        return reverse('music:detail', kwargs={'album_id': self.pk})
+        return reverse('music:detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.title + ' by ' + self.artist
@@ -23,3 +23,8 @@ class Song(models.Model):
 
     def __str__(self):
         return self.title
+
+    # After the user creates a new Song object using song_form,
+    # Re-direct the user to music:detail, giving album_id = pk of the parent album
+    def get_absolute_url(self):
+        return reverse('music:detail', kwargs={'pk': self.album.pk})

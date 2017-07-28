@@ -7,8 +7,14 @@
     <div class="jumbotron">
 
         {% include 'music/album_view.html' %}
-            <br><form action="{% url 'music:song-add' album.pk %}" method="get" style="display: inline;">
-                <input type="hidden" name="song-add" value=""/>
+        <br>
+
+        <div class="form-group">
+        <form action="{% url 'music:song-added' album.id %}" method="post" style="display: inline;">
+            {% csrf_token %}
+                <label for="songTitle">Song title</label>
+                <input type="text" class="form-control" id="songTitle" name="songTitle"/>
+                <small id="songWarning" class="form-text text-muted">Here's some informative text.</small>
                 <button type="submit" class="btn btn-default btn-sm">
                     <span class="glyphicon glyphicon-plus"></span>
                 </button>
