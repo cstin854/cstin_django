@@ -58,7 +58,15 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{% url 'music:album-add' %}"><span class="glyphicon glyphicon-plus"></span>Add Album</a></li>
-                    <li><a href="{% url 'music:logout' %}"><span class="glyphicon glyphicon-off"></span>&nbsp;Logout</a></li>
+                    {% if request.user.username %}
+                    <li>
+                        <a href="{% url 'music:logout' %}"><span class="glyphicon glyphicon-log-out"></span>
+                            &nbsp;Logout ({{ request.user.username }})
+                        </a>
+                    </li>
+                    {% else %}
+                    <li><a href="{% url 'music:login' %}"><span class="glyphicon glyphicon-log-in"></span>&nbsp;Login</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

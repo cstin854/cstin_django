@@ -120,30 +120,35 @@ class UserFormView(View):
 class LoginView(View):
 
     form_class = UserLogin
-    template_name = 'music/registration_form.html'
+    template_name = 'music/login_form.html'
 
     # Displays a blank form for a user that isn't logged in
     def get(self, request):
         form = self.form_class(None)
+        if request.user.username:
+            context = {}
+            error_message = 'You are already logged in as user ' + request.user.username
+            error_message += '. Please log out if you believe this is in error or '
+            error_message += 'if you would like to log in as another user.'
+            context['error_message'] = error_message
+            context['error_title'] = 'Already logged in:'
+            return index(request, context)
         return render(request, self.template_name, {'form': form})
 
     # Process form data:
     def post(self, request):
+        context = {}
+        context['error_title'] = 'Error logging in:'
+        context['error_message'] = 'Please try again. If you continue to have issues logging in,' \
+                                   ' please contact us via the "contact" page.'
         form = self.form_class(request.POST)
+        context['form'] = form
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return redirect('music:index')
+        if user is not None and user.is_active:
+            login(request, user)
+            return redirect('music:index')
 
-        return render(request, self.template_name, {'form':form, 'error_message':self.get_errors(form)})
-
-    def get_errors(self, form):
-        message = ''
-        for key, value in form.errors.items():
-            print(key, ":", value)
-            message += value
-        return message
+        return render(request, self.template_name, context)
