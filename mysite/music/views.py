@@ -6,14 +6,23 @@ from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
 from .forms import UserForm
+from django.contrib.auth import logout
 
 
-def index(request):
+def index(request, context={}):
     all_albums = Album.objects.all()
-    context = {
-        'all_albums' : all_albums
-        }
+    context['all_albums'] = all_albums
     return render(request, 'music/index.html', context)
+
+def logout_view(request):
+    username = request.user.username
+    if not username:
+        username = 'Logout'
+    context = {}
+    context['error_title'] = username
+    context['error_message'] = 'You have been logged out.'
+    logout(request)
+    return index(request,context)
 
 
 def detail(request, pk, error_message='',template='music/detail.html'):
@@ -99,4 +108,11 @@ class UserFormView(View):
                     login(request, user)
                     return redirect('music:index')
 
-        return render(request, self.template_name, {'form':form})
+        return render(request, self.template_name, {'form':form, 'error_message':self.get_errors(form)})
+
+    def get_errors(self, form):
+        message = ''
+        for key, value in form.errors.items():
+            print(key, ":", value)
+            message += value
+        return message
