@@ -23,7 +23,8 @@ app_name = 'music'
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^register/$', views.UserFormView.as_view(), name='register'),
-    url(r'^logout/$', views.logout_view, name='lgout'),
+    url(r'^logout/$', views.logout_view, name='logout'),
+    url(r'^login/$', views.LoginView.as_view(), name='login'),
     url(r'^(?P<pk>[0-9]+)/$', views.detail, name='detail'),
     #Automatically looks for album_form.html
     #I think I'd like to eventually make my own isntead of relying

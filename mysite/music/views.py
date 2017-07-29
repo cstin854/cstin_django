@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
-from .forms import UserForm
+from .forms import UserForm, UserLogin
 from django.contrib.auth import logout
 
 
@@ -107,6 +107,37 @@ class UserFormView(View):
                 if user.is_active:
                     login(request, user)
                     return redirect('music:index')
+
+        return render(request, self.template_name, {'form':form, 'error_message':self.get_errors(form)})
+
+    def get_errors(self, form):
+        message = ''
+        for key, value in form.errors.items():
+            print(key, ":", value)
+            message += value
+        return message
+
+class LoginView(View):
+
+    form_class = UserLogin
+    template_name = 'music/registration_form.html'
+
+    # Displays a blank form for a user that isn't logged in
+    def get(self, request):
+        form = self.form_class(None)
+        return render(request, self.template_name, {'form': form})
+
+    # Process form data:
+    def post(self, request):
+        form = self.form_class(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect('music:index')
 
         return render(request, self.template_name, {'form':form, 'error_message':self.get_errors(form)})
 
